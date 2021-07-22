@@ -82,9 +82,9 @@ adminRoutes.route("/admin/update/driver/:id").post(function (req, res) {
   };
   db_connect
     .collection("DataDriver")
-    .updateOne(myquery, newvalues, function (err, res) {
+    .updateOne(myquery, newvalues, function (err, result) {
       if (err) throw err;
-      console.log("1 document updated");
+      res.status(201).json({result, message : "Updated Succesfully"});
     });
 });
 
