@@ -1,4 +1,5 @@
 const express = require("express");
+var bodyParser = require('body-parser')
 
 const app = express();
 
@@ -16,6 +17,13 @@ app.use(require("./routes/admin"));
 app.use(require("./routes/driver"));
 app.use(require("./routes/customer"));
 app.use(require("./routes/auth"));
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+ 
+// parse application/json
+app.use(bodyParser.json())
+
 
 // get driver connection
 const dbo = require("./db/conn");

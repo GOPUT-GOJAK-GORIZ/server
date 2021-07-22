@@ -74,8 +74,6 @@ customerRoutes.route("/cust/update/account/:id").post(function (req, res) {
         blocked: req.body.blocked
         }
     };  
-
-    
         db_connect.collection("DataCustomer").updateOne(id_account, new_values, function (err, res){
             if (err) throw err;
             res.status(201).json({
@@ -169,6 +167,7 @@ customerRoutes.route("/cust/create/review").post(function (req, res) {
         console.log(err);
     }
 });
+
 // CUSTOMER GET ALL ORDER HISTORY // (FR4)
 // customerRoutes.route("/cust/get/allorder_history").get(function (req, res) {
 //     try{
