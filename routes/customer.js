@@ -24,7 +24,7 @@ customerRoutes.route("/cust/create/newaccount").post(function (req, res) {
                 gender: req.body.profile.gender,
                 birth_of_date: req.body.profile.birth_of_date
             },
-            signUp_date: req.body.signUp_date,
+            signUp_date: new Date(),
             blocked: req.body.blocked
         };
 
@@ -68,13 +68,11 @@ customerRoutes.route("/cust/update/account/:id").post(function (req, res) {
             prof_pic: req.body.profile.prof_pic,
             phone_number: req.body.profile.phone_number,
             gender: req.body.profile.gender,
-            birth_of_date: req.body.profile.birth_of_date
-        },
-        signUp_date: req.body.signUp_date,
-        blocked: req.body.blocked
+            birth_of_date: new Date(req.body.profile.birth_of_date)
+        }
         }
     };  
-        db_connect.collection("DataCustomer").updateOne(id_account, new_values, function (err, res){
+        db_connect.collection("DataCustomer").updateOne(id_account, new_values, function (err, result){
             if (err) throw err;
             res.status(201).json({
                 message: "Succesfully updated",
@@ -101,7 +99,7 @@ customerRoutes.route("/cust/create/order").post(function (req, res) {
             recipient_name: req.body.recipient_detail.recipient_name,
             recipient_phone_number: req.body.recipient_detail.recipient_phone_number
         },
-        date: req.body.date,
+        date: new Date(),
         type_of_service: req.body.type_of_service,
         start_loc: {
             longtitude: req.body.start_loc.longtitude,
