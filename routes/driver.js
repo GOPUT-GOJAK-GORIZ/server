@@ -97,7 +97,7 @@ driverRoutes.route("/driver/read/feedback/:id").get((req, res) => {
 // DRIVER GET ALL ORDER HISTORY // (FR7)
 driverRoutes.route("/driver/get/history/:id").get(function (req, res) {
     let db_connect = dbo.getDb("employees");
-    let myquery = { id_driver: req.params.id, activity_status: 'Finished' };
+    let myquery = { id_driver: req.params.id, activity_status: 'finished' };
     db_connect
       .collection("ActivityHistory")
       .find(myquery)
@@ -110,7 +110,7 @@ driverRoutes.route("/driver/get/history/:id").get(function (req, res) {
 // DRIVER GET New Order // (FR4)
 driverRoutes.route("/driver/get/neworder/:id").get(function (req, res) {
   let db_connect = dbo.getDb("employees");
-  let myquery = { id_driver: req.params.id, activity_status: 'New Order' };
+  let myquery = { id_driver: req.params.id, activity_status: 'new order' };
   db_connect
     .collection("ActivityHistory")
     .find(myquery)
@@ -152,8 +152,6 @@ driverRoutes.route("/driver/update/profile/:id").post(function (req, res) {
   });
 
 
-
-
 // DRIVER UPDATE ACTIVE STATUS // (FD10)
 driverRoutes.route("/driver/update/active/:id").post(function (req, res) {
     let db_connect = dbo.getDb("employees");
@@ -166,13 +164,42 @@ driverRoutes.route("/driver/update/active/:id").post(function (req, res) {
     };
     db_connect
       .collection("DataDriver")
-      .updateOne(myquery, newvalues, function (err, res) {
+      .updateOne(myquery, newvalues, function (err, result) {
         if (err) throw err;
-        console.log("1 document updated");
+        res.status(201).json({result, message : "Updated Succesfully"})
       });
   });
 
 
-  // DRIVER UPDATE ORDER STATUS
+  // DRIVER UPDATE ORDER STATUS (FR13)
+driverRoutes.route("/driver/update/activitystatus/:id").post(function (req, res) {
+    let db_connect = dbo.getDb("employees");
+    var myquery = { _id: new mongodb.ObjectID(req.params.id) };
+    let newvalues = {
+      $set: {
+        activity_status: req.body.activity_status
+      },
+    };
+    db_connect
+      .collection("ActivityHistory")
+      .updateOne(myquery, newvalues, function (err, result) {
+        if (err) throw err;
+        res.status(201).json({result, message : "Updated Succesfully"})
+      });
+  });
+
+// READ 1 ACTIVITY
+driverRoutes.route("/admin/read/activity/:id").get((req, res) => {
+  let db_connect = dbo.getDb("employees");
+  var myquery = { _id: new mongodb.ObjectID(req.params.id) };
+  db_connect
+    .collection("ActivityHistory")
+    .find(myquery)
+    .toArray(function (err, result) {
+      if (err) throw err;
+      res.json(result);
+    });
+});
+
 
 module.exports = driverRoutes;

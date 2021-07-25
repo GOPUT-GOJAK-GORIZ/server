@@ -58,7 +58,7 @@ adminRoutes.route("/admin/read/driver/:id").get((req, res) => {
     });
 });
 
-// ADMIN READ ALL DRIVER (SUDAH DI VERIFIKASI) (FD2)
+// ADMIN READ ALL DRIVER (FD2)
 adminRoutes.route("/admin/read/alldriver").get(function (req, res) {
   let db_connect = dbo.getDb("employees");
   let mySort = {name: 1};
@@ -337,7 +337,7 @@ adminRoutes.route("/admin/get/history/:category").get(function (req, res) {
     });
 });
 
-// READ 1 ACTIVITY
+// READ 1 ACTIVITY FR10
 adminRoutes.route("/admin/read/activity/:id").get((req, res) => {
   let db_connect = dbo.getDb("employees");
   var myquery = { _id: new mongodb.ObjectID(req.params.id) };
@@ -368,21 +368,109 @@ adminRoutes.route("/admin/read/feedback/:id").get((req, res) => {
 
 /* ADMIN READ ABOUT REPORTS */
 
-// REPORTS PER DAY // (FR8)
-// Jumlah Order setiap Layanan 
-// Jumlah Akun baru
+/* Total order per layanan*/
+
+adminRoutes.route("/admin/read/report/pertype").get((req, res) => {
+  let db_connect = dbo.getDb("employees");
+  db_connect
+    .collection("ActivityHistory")
+    .aggregate([
+      { $group : { _id : '$type_of_service', totalorder : { $sum : 1 } } }
+    ])
+    .toArray(function (err, result) {
+      if (err) throw err;
+      res.json(result);
+    });
+});
+
+/*REPORT THIS MONTH */
+adminRoutes.route("/admin/get/totalorder/thismonth").get(function (req, res) {
+  let db_connect = dbo.getDb("employees");
+  let order_month = { date: {$gt: new Date(new Date().setDate(new Date().getDate() - 30))} };
+  db_connect
+    .collection("ActivityHistory")
+    .aggregate([
+      {$match : order_month},
+      { $group : { _id : 0, totalorder : { $sum : 1 } } }
+    ])
+    .toArray(function (err, result) {
+      if (err) throw err;
+      res.json(result);
+    });
+    
+});
 
 
+//TOTAL ORDER THIS WEEK
+adminRoutes.route("/admin/get/totalorder/thisweek").get(function (req, res) {
+  let db_connect = dbo.getDb("employees");
+  let order_week = { date: {$gt: new Date(new Date().setDate(new Date().getDate() - 7))} };
+  db_connect
+    .collection("ActivityHistory")
+    .aggregate([
+      {$match : order_week},
+      { $group : { _id : 0, totalorder : { $sum : 1 } } }
+    ])
+    .toArray(function (err, result) {
+      if (err) throw err;
+      res.json(result);
+    });
+    
+});
+
+// TOTAL ORDER TODAY
+adminRoutes.route("/admin/get/totalorder/today").get(function (req, res) {
+  let db_connect = dbo.getDb("employees");
+  let order_day = { date: {$gt: new Date(new Date().setDate(new Date().getDate() - 1))} };
+  db_connect
+    .collection("ActivityHistory")
+    .aggregate([
+      {$match : order_day},
+      { $group : { _id : 0, totalorder : { $sum : 1 } } }
+    ])
+    .toArray(function (err, result) {
+      if (err) throw err;
+      res.json(result);
+    });
+    
+});
 
 
-// REPORTS PER MONTH // (FR8)
-// Jumlah Order setiap Layanan 
-// Jumlah Akun baru
+//NEW ACCOUNT THIS MONTH
+adminRoutes.route("/admin/get/totalnewcust/thismonth").get(function (req, res) {
+  let db_connect = dbo.getDb("employees");
+  let this_month = { signUp_date: {$gt: new Date(new Date().setDate(new Date().getDate() - 30))} };
+  db_connect
+    .collection("DataCustomer")
+    .aggregate([
+      {$match : this_month},
+      { $group : { _id : 0, totaluser : { $sum : 1 } } }
+    ])
+    .toArray(function (err, result) {
+      if (err) throw err;
+      res.json(result);
+    });
+    
+});
 
-
-
-// REPORTS PER YEAR // (FR8)
-// Jumlah Order setiap Layanan 
-// Jumlah Akun baru
+//REPORT IN 1 YEAR
+adminRoutes.route("/admin/get/totalorder/:year").get(function (req, res) {
+  let db_connect = dbo.getDb("employees");
+  let year = req.params.year;
+  let nextyear = (parseInt(year) + 1).toString();
+  let myquery = { date: {$gte: new Date(year), $lt: new Date(new Date(nextyear).setDate(new Date(nextyear).getDate() - 1))} };
+  // console.log(new Date();
+  db_connect
+    .collection("ActivityHistory")
+    .aggregate([
+      {$match: myquery },
+      { $group : {  _id: {$substr: ['$date', 5, 2]} , totalorder : { $sum : 1 } } }
+    ])
+    .toArray(function (err, result) {
+      if (err) throw err;
+      res.json(result);
+    });
+    
+});
 
 module.exports = adminRoutes;
