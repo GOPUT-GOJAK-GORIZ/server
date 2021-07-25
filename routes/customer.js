@@ -11,7 +11,7 @@ const dbo = require("../db/conn");
 // CUSTOMER CRAETE ACCOUNT // (FC1)
 customerRoutes.route("/cust/create/newaccount").post(function (req, res) {
     let db_connect = dbo.getDb("employees");
-    console.log(req)
+    // console.log(req)
     if(req.body.customer_password == req.body.password_verification){
         console.log("verifikasi password berhasil");
         let new_account = {
@@ -50,7 +50,7 @@ customerRoutes.route("/cust/read/account/:id").get(function(req, res){
     db_connect.collection("DataCustomer").find(id_account).toArray(function (err, result) {
       if (err) throw err;
       res.json(result);
-       console.log(result);
+    //    console.log(result);
     });
 });
 
@@ -126,21 +126,22 @@ customerRoutes.route("/cust/create/order").post(function (req, res) {
     }
 });
 // CUSTOMER READ 1 ORDER // (FR4)
-customerRoutes.route("/cust/read/order").get(function (req, res) {
-    try{
-        db_connect.collection("ActivityHistory").find();
-        res.status(201).json({
-        message: "Succesfully inserted",
-        new_account
-    });
-    }catch(err){
-        console.log(err);
-    }
+customerRoutes.route("/cust/read/order/:id").get(function (req, res) {
+    let db_connect = dbo.getDb("On-Demand");
+    var myquery = { _id: new mongodb.ObjectID(req.params.id) };
+    db_connect
+        .collection("ActivityHistory")
+        .find(myquery)
+        .toArray(function (err, result) {
+        if (err) throw err;
+        res.json(result);
+        });
 });
 // CUSTOMER GET DRIVER PROFILE // (FD9)
-customerRoutes.route("/cust/get/driver_profile").get(function (req, res) {
+customerRoutes.route("/cust/get/driver_profile/:id").get(function (req, res) {
+    var myquery = { _id: new mongodb.ObjectID(req.params.id) };
     try{
-        db_connect.collection("DataDriver").find();
+        db_connect.collection("DataDriver").find(myquery);
         res.status(201).json({
         message: "Succesfully inserted",
         new_account
@@ -168,65 +169,28 @@ customerRoutes.route("/cust/create/review").post(function (req, res) {
     }
 });
 
-// CUSTOMER GET ALL ORDER HISTORY // (FR4)
-// customerRoutes.route("/cust/get/allorder_history").get(function (req, res) {
-//     try{
-//         db_connect.collection("ActivityHistory").find();
-//         res.status(201).json({
-//         message: "Succesfully inserted",
-//         new_account
-//     });
-//     }catch(err){
-//         console.log(err);
-//     }
-// });
-
-customerRoutes.route("/cust/get/allorder_history").get(function (req, res) {
+customerRoutes.route("/cust/get/allorder_history/:id").get(function (req, res) {
     let db_connect = dbo.getDb("employees");
-    let mySort = {name: 1};
+    let myquery = { id_customer: req.params.id };
     db_connect
       .collection("ActivityHistory")
-      .find({})
-      .sort(mySort)
+      .find(myquery)
       .toArray(function (err, result) {
         if (err) throw err;
         res.json(result);
       });
   });
-// CUSTOMER GET ORDER HISTORY (motorcycle) // (FR4)
-customerRoutes.route("/cust/get/order_history/motorcycle").get(function (req, res) {
-    try{
-        db_connect.collection("ActivityHistory").find();
-        res.status(201).json({
-        message: "Succesfully inserted",
-        new_account
-    });
-    }catch(err){
-        console.log(err);
-    }
-});
-// CUSTOMER GET ORDER HISTORY (car) // (FR4)
-customerRoutes.route("/cust/get/order_history/car").get(function (req, res) {
-    try{
-        db_connect.collection("ActivityHistory").find();
-        res.status(201).json({
-        message: "Succesfully inserted",
-        new_account
-    });
-    }catch(err){
-        console.log(err);
-    }
-});
-// CUSTOMER GET ORDER HISTORY (barang) // (FR4)
-customerRoutes.route("/cust/get/order_history/barang").get(function (req, res) {
-    try{
-        db_connect.collection("ActivityHistory").find();
-        res.status(201).json({
-        message: "Succesfully inserted",
-        new_account
-    });
-    }catch(err){
-        console.log(err);
-    }
-});
+// CUSTOMER GET ORDER HISTORY (per category) // (FR4)
+customerRoutes.route("/cust/get/history/:id/:category").get(function (req, res) {
+    let db_connect = dbo.getDb("employees");
+    let myquery = {id_customer: req.params.id, type_of_service: req.params.category };
+    db_connect
+      .collection("ActivityHistory")
+      .find(myquery)
+      .toArray(function (err, result) {
+        if (err) throw err;
+        res.json(result);
+      });
+  });
+
 module.exports = customerRoutes;
