@@ -97,7 +97,7 @@ driverRoutes.route("/driver/read/feedback/:id").get((req, res) => {
 // DRIVER GET ALL ORDER HISTORY // (FR7)
 driverRoutes.route("/driver/get/history/:id").get(function (req, res) {
     let db_connect = dbo.getDb("employees");
-    let myquery = { id_driver: req.params.id, activity_status: 'finished' };
+    let myquery = { id_driver: req.params.id, activity_status: {$in: ['finished', 'cancelled']} };
     db_connect
       .collection("ActivityHistory")
       .find(myquery)
@@ -110,7 +110,7 @@ driverRoutes.route("/driver/get/history/:id").get(function (req, res) {
 // DRIVER GET New Order // (FR4)
 driverRoutes.route("/driver/get/neworder/:id").get(function (req, res) {
   let db_connect = dbo.getDb("employees");
-  let myquery = { id_driver: req.params.id, activity_status: 'new order' };
+  let myquery = { id_driver: req.params.id, activity_status: {$not : {$in: ['finished', 'cancelled']}} };
   db_connect
     .collection("ActivityHistory")
     .find(myquery)
@@ -189,7 +189,7 @@ driverRoutes.route("/driver/update/activitystatus/:id").post(function (req, res)
   });
 
 // READ 1 ACTIVITY
-driverRoutes.route("/admin/read/activity/:id").get((req, res) => {
+driverRoutes.route("/driver/read/activity/:id").get((req, res) => {
   let db_connect = dbo.getDb("employees");
   var myquery = { _id: new mongodb.ObjectID(req.params.id) };
   db_connect
@@ -199,6 +199,16 @@ driverRoutes.route("/admin/read/activity/:id").get((req, res) => {
       if (err) throw err;
       res.json(result);
     });
+});
+
+driverRoutes.route("/driver/read/cust/:id").get(function(req, res){
+  let db_connect = dbo.getDb("employees");
+  let id_account = { _id : new mongodb.ObjectID(req.params.id)}
+  db_connect.collection("DataCustomer").find(id_account).toArray(function (err, result) {
+    if (err) throw err;
+    res.json(result);
+  //    console.log(result);
+  });
 });
 
 

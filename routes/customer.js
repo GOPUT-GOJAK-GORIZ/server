@@ -9,7 +9,7 @@ const customerRoutes = express.Router();
 const dbo = require("../db/conn");
 
 // CUSTOMER CRAETE ACCOUNT // (FC1)
-customerRoutes.route("/cust/create/newaccount").post(function (req, res) {
+customerRoutes.route("/cust/signup").post(function (req, res) {
     let db_connect = dbo.getDb("employees");
     // console.log(req)
     if(req.body.customer_password == req.body.password_verification){
