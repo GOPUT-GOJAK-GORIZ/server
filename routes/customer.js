@@ -97,7 +97,7 @@ customerRoutes.route("/cust/create/order/transportasi").post(function (req, res)
       id_driver = result[selected]._id; 
 
       let new_order = {
-        id_driver: id_driver.str,
+        id_driver: id_driver.toHexString(),
         id_customer: req.body.id_customer,
         date: new Date(),
         type_of_service: req.body.type_of_service,
