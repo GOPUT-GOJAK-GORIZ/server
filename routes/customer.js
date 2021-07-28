@@ -82,34 +82,94 @@ customerRoutes.route("/cust/update/account/:id").post(function (req, res) {
 });
 
 // CUSTOMER CREATE ORDER // (FR1)
-customerRoutes.route("/cust/create/order").post(function (req, res) {
+customerRoutes.route("/cust/create/order/transportasi/:id").post(function (req, res) {
     let db_connect = dbo.getDb("On-Demand");
+
+    var id_driver = "";
+    var length = 0;
+    var myquery = { active_status: true , verification_status: true};
+
+    db_connect
+    .collection("DataDriver")
+    .find(myquery)
+    .toArray(function (err, result) {
+      if (err) throw err;
+      length = result.length;
+      let selected = Math.floor(Math.random() * length);
+      id_driver = result[selected]._id;
+
+      let new_order = {
+        id_driver: id_driver,
+        id_customer:req.params.id,
+        date: new Date(),
+        type_of_service: req.body.type_of_service,
+        start_loc: {
+            longitude: req.body.start_loc.longitude,
+            latitude: req.body.start_loc.latitude
+        },
+        end_loc: {
+            longitude: req.body.end_loc.longitude,
+            latitude: req.body.end_loc.latitude
+        },
+        activity_status: "new order",
+        price: req.body.price
+    };
+
+    try{
+        db_connect.collection("ActivityHistory").insertOne(new_order);
+        res.status(201).json({
+        message: "Succesfully inserted",
+        new_order
+    });
+    }catch(err){
+        console.log(err);
+    }
+
+    });
+});
+
+customerRoutes.route("/cust/create/order/antarbarang").post(function (req, res) {
+    let db_connect = dbo.getDb("On-Demand");
+
+    let id_driver = "";
+    let length = 0;
+    var myquery = { active_status: true };
+
+    db_connect
+    .collection("DataDriver")
+    .find(myquery)
+    .toArray(function (err, result) {
+      if (err) throw err;
+      length = result.length;
+      let selected = Math.floor(Math.random() * length);
+      id_driver = result[selected]._id;
+    });
+
     let new_order = {
-        id_driver: req.body.profile.name,
-        id_customer:req.body,
-        id_feedback:req.body,
+        id_driver: id_driver,
+        id_customer:req.body.id_customer,
         item_detail: {
-            id_item: req.body.item_detail.id_item,
+            id_item:new mongodb.ObjectID(),
             weight: req.body.item_detail.weight,
             type: req.body.item_detail.type,
             delivery_instruction: req.body.item_detail.delivery_instruction
         },
         recipient_detail: {
-            id_recepient:req.body,
+            id_recepient: new mongodb.ObjectID(),
             recipient_name: req.body.recipient_detail.recipient_name,
             recipient_phone_number: req.body.recipient_detail.recipient_phone_number
         },
         date: new Date(),
-        type_of_service: req.body.type_of_service,
+        type_of_service: 'antar barang',
         start_loc: {
-            longtitude: req.body.start_loc.longtitude,
+            longitude: req.body.start_loc.longitude,
             latitude: req.body.start_loc.latitude
         },
         end_loc: {
-            longtitude: req.body.end_loc.longtitude,
+            longitude: req.body.end_loc.longitude,
             latitude: req.body.end_loc.latitude
         },
-        activity_status: req.body.activity_status,
+        activity_status: "new order",
         price: req.body.price
     };
 
@@ -123,6 +183,8 @@ customerRoutes.route("/cust/create/order").post(function (req, res) {
         console.log(err);
     }
 });
+
+
 // CUSTOMER READ 1 ORDER // (FR4)
 customerRoutes.route("/cust/read/order/:id").get(function (req, res) {
     let db_connect = dbo.getDb("On-Demand");
