@@ -301,9 +301,11 @@ adminRoutes.route("/admin/delete/admin/:id").delete((req, res) => {
 // ADMIN READ ALL ACTIVITY (FR5)
 adminRoutes.route("/admin/read/allactivity").get(function (req, res) {
   let db_connect = dbo.getDb("employees");
+  let mysort = {date: -1}
   db_connect
     .collection("ActivityHistory")
     .find({})
+    .sort(mysort)
     .toArray(function (err, result) {
       if (err) throw err;
       res.json(result);
@@ -313,11 +315,13 @@ adminRoutes.route("/admin/read/allactivity").get(function (req, res) {
 // ADMIN READ ACTIVITY PER DAY (FR6)
 adminRoutes.route("/admin/get/history/perday/:date").get(function (req, res) {
   let db_connect = dbo.getDb("employees");
+  let mysort = {date: -1}
   let myquery = { date: {$gte: new Date(req.params.date), $lt: new Date(new Date(req.params.date).setDate(new Date(req.params.date).getDate()+1))} };
   // console.log(new Date(new Date(req.params.date).setDate(new Date(req.params.date).getDate()+1)));
   db_connect
     .collection("ActivityHistory")
     .find(myquery)
+    .sort(mysort)
     .toArray(function (err, result) {
       if (err) throw err;
       res.json(result);
@@ -328,9 +332,11 @@ adminRoutes.route("/admin/get/history/perday/:date").get(function (req, res) {
 adminRoutes.route("/admin/get/history/:category").get(function (req, res) {
   let db_connect = dbo.getDb("employees");
   let myquery = { type_of_service: req.params.category };
+  let mysort = {date: -1}
   db_connect
     .collection("ActivityHistory")
     .find(myquery)
+    .sort(mysort)
     .toArray(function (err, result) {
       if (err) throw err;
       res.json(result);

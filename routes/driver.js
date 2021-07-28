@@ -97,10 +97,12 @@ driverRoutes.route("/driver/read/feedback/:id").get((req, res) => {
 // DRIVER GET ALL ORDER HISTORY // (FR7)
 driverRoutes.route("/driver/get/history/:id").get(function (req, res) {
     let db_connect = dbo.getDb("employees");
+    let mysort = {date: -1}
     let myquery = { id_driver: req.params.id, activity_status: {$in: ['finished', 'cancelled']} };
     db_connect
       .collection("ActivityHistory")
       .find(myquery)
+      .sort(mysort)
       .toArray(function (err, result) {
         if (err) throw err;
         res.json(result);
@@ -110,10 +112,12 @@ driverRoutes.route("/driver/get/history/:id").get(function (req, res) {
 // DRIVER GET New Order // (FR4)
 driverRoutes.route("/driver/get/neworder/:id").get(function (req, res) {
   let db_connect = dbo.getDb("employees");
+  let mysort = {date: -1}
   let myquery = { id_driver: req.params.id, activity_status: {$not : {$in: ['finished', 'cancelled']}} };
   db_connect
     .collection("ActivityHistory")
     .find(myquery)
+    .sort(mysort)
     .toArray(function (err, result) {
       if (err) throw err;
       res.json(result);

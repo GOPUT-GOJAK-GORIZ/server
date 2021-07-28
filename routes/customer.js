@@ -82,11 +82,10 @@ customerRoutes.route("/cust/update/account/:id").post(function (req, res) {
 });
 
 // CUSTOMER CREATE ORDER // (FR1)
-customerRoutes.route("/cust/create/order/transportasi/:id").post(function (req, res) {
+customerRoutes.route("/cust/create/order/transportasi").post(function (req, res) {
     let db_connect = dbo.getDb("On-Demand");
 
     var id_driver = "";
-    var length = 0;
     var myquery = { active_status: true , verification_status: true};
 
     db_connect
@@ -94,13 +93,12 @@ customerRoutes.route("/cust/create/order/transportasi/:id").post(function (req, 
     .find(myquery)
     .toArray(function (err, result) {
       if (err) throw err;
-      length = result.length;
-      let selected = Math.floor(Math.random() * length);
-      id_driver = result[selected]._id;
+      let selected = Math.floor(Math.random() * result.length);
+      id_driver = result[selected]._id; 
 
       let new_order = {
-        id_driver: id_driver,
-        id_customer:req.params.id,
+        id_driver: id_driver.str,
+        id_customer: req.body.id_customer,
         date: new Date(),
         type_of_service: req.body.type_of_service,
         start_loc: {
@@ -231,10 +229,12 @@ customerRoutes.route("/cust/create/review").post(function (req, res) {
 
 customerRoutes.route("/cust/get/allorder_history/:id").get(function (req, res) {
     let db_connect = dbo.getDb("employees");
+    let mysort = {date: -1}
     let myquery = { id_customer: req.params.id };
     db_connect
       .collection("ActivityHistory")
       .find(myquery)
+      .sort(mysort)
       .toArray(function (err, result) {
         if (err) throw err;
         res.json(result);
@@ -243,10 +243,12 @@ customerRoutes.route("/cust/get/allorder_history/:id").get(function (req, res) {
 // CUSTOMER GET ORDER HISTORY (per category) // (FR4)
 customerRoutes.route("/cust/get/history/:id/:category").get(function (req, res) {
     let db_connect = dbo.getDb("employees");
+    let mysort = {date: -1}
     let myquery = {id_customer: req.params.id, type_of_service: req.params.category };
     db_connect
       .collection("ActivityHistory")
       .find(myquery)
+      .sort(mysort)
       .toArray(function (err, result) {
         if (err) throw err;
         res.json(result);
