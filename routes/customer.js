@@ -86,7 +86,12 @@ customerRoutes.route("/cust/create/order/transportasi").post(function (req, res)
     let db_connect = dbo.getDb("On-Demand");
 
     var id_driver = "";
-    var myquery = { active_status: true , verification_status: true};
+    if(req.body.type_of_service == "transportasi motor"){
+        var myquery = { active_status: true , verification_status: true, "vehicle_detail.transportation_type": "Motorcycle"};
+    }else{
+        var myquery = { active_status: true , verification_status: true, "vehicle_detail.transportation_type": "Car"};
+    }
+    
 
     db_connect
     .collection("DataDriver")
@@ -131,7 +136,7 @@ customerRoutes.route("/cust/create/order/antarbarang").post(function (req, res) 
 
     let id_driver = "";
     let length = 0;
-    var myquery = { active_status: true };
+    var myquery = {verification_status: true, active_status: true, "vehicle_detail.transportation_type": "Motorcycle" };
 
     db_connect
     .collection("DataDriver")

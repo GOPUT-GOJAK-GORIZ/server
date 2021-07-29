@@ -101,7 +101,7 @@ adminRoutes.route("/admin/delete/driver/:id").delete((req, res) => {
 // ADMIN SEARCH DRIVER BY NIK (FD3)
 adminRoutes.route("/admin/search/driver/:nik").get((req, res) => {
   let db_connect = dbo.getDb("employees");
-  var myquery = { "profile.NIK": (req.params.nik).toString() };
+  var myquery = { "profile.nik": (req.params.nik).toString() };
   // console.log((req.params.nik).toString());
   db_connect
     .collection("DataDriver")
