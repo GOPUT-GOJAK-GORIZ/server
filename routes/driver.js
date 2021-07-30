@@ -13,7 +13,6 @@ const dbo = require("../db/conn");
 driverRoutes.route("/driver/signup").post(function (req, res) {
     let db_connect = dbo.getDb("employees");
     if(req.body.driver_password == req.body.password_verification){
-        // console.log("verif pass berhasil");
         let new_profile = {
           nik: "",
           sim_no: "",

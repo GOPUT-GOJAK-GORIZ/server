@@ -163,7 +163,7 @@ customerRoutes.route("/cust/create/order/antarbarang").post(function (req, res) 
             recipient_phone_number: req.body.recipient_detail.recipient_phone_number
         },
         date: new Date(),
-        type_of_service: 'antar barang',
+        type_of_service: 'Antar Barang',
         start_loc: {
             longitude: req.body.start_loc.longitude,
             latitude: req.body.start_loc.latitude
@@ -292,6 +292,6 @@ customerRoutes.route("/cust/create/review/:id_act").post(function (req, res) {
       }catch(err){
         console.log(err);
       }
-  });
+});
 
 module.exports = customerRoutes;
