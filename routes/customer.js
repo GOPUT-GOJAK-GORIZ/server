@@ -260,4 +260,38 @@ customerRoutes.route("/cust/get/history/:id/:category").get(function (req, res) 
       });
   });
 
+
+customerRoutes.route("/cust/create/review/:id_act").post(function (req, res) {
+    let db_connect = dbo.getDb("employees");
+    var myquery = { _id: new mongodb.ObjectID(req.params.id_act) };
+    let id_review =  new mongodb.ObjectID();
+      let new_review = {
+        _id :id_review,
+        rating: req.body.rating,
+        review: req.body.review
+      };
+      try{
+        db_connect.collection("Feedback").insertOne(new_review);
+            res.status(201).json({
+            message: "Succesfully inserted",
+            new_review
+        });
+
+        let newvalues = {
+            $set: {
+              id_feedback: id_review.toHexString()
+            },
+          };
+          db_connect
+            .collection("ActivityHistory")
+            .updateOne(myquery, newvalues, function (err, result) {
+              if (err) throw err;
+              res.status(201).json({result, message : "Updated Succesfully"})
+            });
+
+      }catch(err){
+        console.log(err);
+      }
+  });
+
 module.exports = customerRoutes;
