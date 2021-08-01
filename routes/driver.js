@@ -28,7 +28,7 @@ driverRoutes.route("/driver/signup").post(function (req, res) {
           plat_number: "",
           capacity: 0,
           merk_and_type: "",
-          stnk_no_registrasion: "",
+          stnk_no_registration: "",
       
         };
       
@@ -56,6 +56,7 @@ driverRoutes.route("/driver/signup").post(function (req, res) {
           vehicle_details: new_vehicle_details,
           address: newAddress,
           documents:newDocuments,
+          verification_status: false,
           rating: null,
           submitted: false,
           active_status: false,

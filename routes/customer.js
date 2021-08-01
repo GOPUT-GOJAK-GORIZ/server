@@ -87,9 +87,9 @@ customerRoutes.route("/cust/create/order/transportasi").post(function (req, res)
 
     var id_driver = "";
     if(req.body.type_of_service == "transportasi motor"){
-        var myquery = { active_status: true , verification_status: true, "vehicle_detail.transportation_type": "Motorcycle"};
+        var myquery = { active_status: true , verification_status: true, "vehicle_details.transportation_type": "Motorcycle"};
     }else{
-        var myquery = { active_status: true , verification_status: true, "vehicle_detail.transportation_type": "Car"};
+        var myquery = { active_status: true , verification_status: true, "vehicle_details.transportation_type": "Car"};
     }
     
 
@@ -136,7 +136,7 @@ customerRoutes.route("/cust/create/order/antarbarang").post(function (req, res) 
 
     let id_driver = "";
     let length = 0;
-    var myquery = {verification_status: true, active_status: true, "vehicle_detail.transportation_type": "Motorcycle" };
+    var myquery = {verification_status: true, active_status: true, "vehicle_details.transportation_type": "Motorcycle" };
 
     db_connect
     .collection("DataDriver")
