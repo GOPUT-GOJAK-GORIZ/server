@@ -136,16 +136,15 @@ customerRoutes.route("/cust/create/order/antarbarang").post(function (req, res) 
 
     let id_driver = "";
     let length = 0;
-    var myquery = {verification_status: true, active_status: true, "vehicle_details.transportation_type": "Motorcycle" };
+    var myquery = { active_status: true , verification_status: true, "vehicle_details.transportation_type": "Motorcycle"};
 
     db_connect
     .collection("DataDriver")
     .find(myquery)
     .toArray(function (err, result) {
       if (err) throw err;
-      length = result.length;
-      let selected = Math.floor(Math.random() * length);
-      id_driver = result[selected]._id;
+      let selected = Math.floor(Math.random() * result.length);
+      id_driver = result[selected]._id; 
     });
 
     let new_order = {
