@@ -145,9 +145,8 @@ customerRoutes.route("/cust/create/order/antarbarang").post(function (req, res) 
       if (err) throw err;
       let selected = Math.floor(Math.random() * result.length);
       id_driver = result[selected]._id; 
-    });
 
-    let new_order = {
+      let new_order = {
         id_driver: id_driver,
         id_customer:req.body.id_customer,
         item_detail: {
@@ -184,6 +183,13 @@ customerRoutes.route("/cust/create/order/antarbarang").post(function (req, res) 
     }catch(err){
         console.log(err);
     }
+
+
+    });
+
+    
+
+    
 });
 
 
